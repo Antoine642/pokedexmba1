@@ -47,7 +47,7 @@ function Generation() {
                                     <div key={index} className="card">
                                         <img src={pokemon.url} alt={pokemon.name} />
                                         <div className="card-body">
-                                            <a href={"/pokemon/" + pokemon.name} className="btn btn-primary w-100 text-capitalize fw-semibold">{pokemon.name}</a>
+                                            <a href={"/" + pokemon.name} className="btn btn-primary w-100 text-capitalize fw-semibold">{pokemon.name}</a>
                                         </div>
                                     </div>
                                 </div>

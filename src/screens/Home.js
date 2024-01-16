@@ -50,9 +50,9 @@ function Home(props) {
         <div key={genData.generation}>
           <h2>{genData.generation}</h2>
           <div className="d-flex flex-row">
-            <div className="my-3 d-flex mx-auto w-75 p-0 overflow-auto overhidden">
+            <div className="my-3 d-flex mx-auto w-75 p-2 overflow-auto overhidden myBorder">
               {genData.pokemons.map((pokemon, index) => (
-                <div key={index + 1} className="ms-2 list-group-item">
+                <div key={index + 1} className="ms-2 mb-2 list-group-item">
                   <div className="card h-100" style={{ width: "10rem" }}>
                     <img src={getImageSrcFromIndex(getIndexFromUrl(pokemon.url))} className="card-img-top cardImg" alt="..."/>
                     <div className="card-body">
