@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import Searching from './Searching';
 
 function PokemonList() {
@@ -42,7 +43,7 @@ function PokemonList() {
                     <div className="card h-100" style={{ width: "10rem" }}>
                         <img src={getImageSrcFromIndex(getIndexFromUrl(pokemon.url))} className="card-img-top cardImg" alt="..."/>
                         <div className="card-body">
-                            {pokemon.name}
+                            <Link to={'/' + pokemon.name} className="btn btn-primary w-100 text-capitalize fw-semibold">{pokemon.name}</Link>
                         </div>
                     </div>
                 </div>
