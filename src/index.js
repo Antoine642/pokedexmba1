@@ -6,6 +6,8 @@ import './index.css';
 import App from './screens/App';
 import Search from './screens/Search';
 import Home from './screens/Home';
+import PokemonDetail from './screens/PokemonDetail';
+import Generation from './screens/Generation';
 
 const routerConfig = createBrowserRouter([
   {
@@ -13,6 +15,8 @@ const routerConfig = createBrowserRouter([
     element: <App />,
     children: [
       { path: '/', element: <Home /> },
+      { path: '/generation/:id', element: <Generation /> },
+      { path: '/:name', element: <PokemonDetail /> },
       { path: '/search', element: <Search /> },
     ],
   },

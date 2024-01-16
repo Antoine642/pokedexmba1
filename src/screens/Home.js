@@ -1,57 +1,73 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import generations from "../components/generations";
+import './Home.css';
 
 const URL = "https://pokeapi.co/api/v2/generation/";
 
 function Home(props) {
   const [generationsData, setGenerationsData] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const dataPromises = generations.map(async (gen) => {
-        const response = await fetch(URL + gen.id);
-        const data = await response.json();
-        const limitedPokemons = data.pokemon_species.slice(0, 5).map(async (pokemon) => {
-          const pokemonResponse = await fetch(pokemon.url);
-          const pokemonData = await pokemonResponse.json();
-          let pokemonIndex = pokemon.url.split('/');
-          pokemonIndex = pokemonIndex[pokemonIndex.length - 2];
-          return {
-            pokemonName: pokemon.name,
-            pokemonUrl: pokemon.url,
-            pokemonDetails: pokemonData,
-            pokemonImage: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIndex}.png`
-          };
-        });
-        const pokemonsWithData = await Promise.all(limitedPokemons);
-        return { generation: gen.name, pokemons: pokemonsWithData };
+  const [pokemon, setPokemon] = useState([]);
+
+  async function getPokemon() {
+    try {
+      const dataPromises = generations.map(async (generations) =>{
+        const res = await fetch(URL + generations.id);
+        const data = await res.json();
+        return data;
       });
+      const data = await Promise.all(dataPromises);
+      const generationsData = data.map((genData, index) => {
+        return {
+          generation: generations[index].name,
+          generationId: generations[index].id,
+          pokemons: genData.pokemon_species,
+        };
+      });
+      setGenerationsData(generationsData);
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
 
-      const allData = await Promise.all(dataPromises);
-      setGenerationsData(allData);
-    };
+  function getImageSrcFromIndex(index) {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index}.png`;
+  }
+  function getIndexFromUrl(url) {
+    const parsedUrl = url.split('/');
+    return parsedUrl[parsedUrl.length - 2];
+  }
 
-    fetchData();
+  useEffect(() => {
+    getPokemon();
   }, []);
-
   return (
-    <div className="row mx-auto">
+    <div className="Home row mx-auto">
       {generationsData.map((genData) => (
         <div key={genData.generation}>
           <h2>{genData.generation}</h2>
-          <ul className="my-3 d-flex flex-row mx-auto justify-content-around w-75 p-0">
-            {genData.pokemons.map((pokemon, index) => (
-              <li key={index + 1} className="ms-2 list-group-item">
-                <div class="card">
-                  <img src={pokemon.pokemonImage} class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">{pokemon.pokemonName}</h5>
-                    <a href={"/pokemon/" + pokemon.pokemonName} class="btn btn-primary">Fiche {pokemon.pokemonName}</a>
+          <div className="d-flex flex-row">
+            <div className="my-3 d-flex mx-auto w-75 p-0 overflow-auto overhidden">
+              {genData.pokemons.map((pokemon, index) => (
+                <div key={index + 1} className="ms-2 list-group-item">
+                  <div className="card h-100" style={{ width: "10rem" }}>
+                    <img src={getImageSrcFromIndex(getIndexFromUrl(pokemon.url))} className="card-img-top cardImg" alt="..."/>
+                    <div className="card-body">
+                      <Link to={'/' + pokemon.name} className="btn btn-primary w-100 text-capitalize fw-semibold">{pokemon.name}</Link>
+                    </div>
                   </div>
                 </div>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+            <div className="h-100 text-center align-middle m-auto">
+              <Link to={`/generation/${genData.generationId}`} className="btn btn-primary">
+                Voir la liste
+              </Link>
+            </div>
+          </div>
         </div>
       ))}
     </div>
